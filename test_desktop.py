@@ -9,8 +9,8 @@ import pyzbar.pyzbar as pyzbar
 from strformat import StrFormat
 import personal_info_reader
 
-T = 2
-T1 = 1
+T = 1.3
+T1 = 0.6
 
 class HCloudDesktopClicker:
     """
@@ -31,7 +31,7 @@ class HCloudDesktopClicker:
     pyzbar for recognizing QR code
     """
 
-    def __init__(self) -> None:
+    def __init__(self, path: str) -> None:
         print("Please ensure that the miniprogram is open.")
         print("Please ensure that the miniprogram is on the very left of the screen.")
         print("Please ensure the miniprogram is visible.")
@@ -39,7 +39,7 @@ class HCloudDesktopClicker:
         print("reading config...")
         self.config = self.read_conf("position.json") 
         StrFormat.info("reading data...")
-        self.data = self.read_data("data.xlsx")
+        self.data = self.read_data(path)
         time.sleep(5)
         StrFormat.info("Starting...")
         
@@ -76,10 +76,10 @@ class HCloudDesktopClicker:
     
     def reg_main(self, row: list[str]):
         """
-        *Ensure that the row is in id-name-addr form!*
+        *Ensure that the row is in id-name-addr-tel form!*
         """
         main = self.config["main"]
-        id, name, addr = row
+        id, name, addr, tel = row
         # firstly choose "non-self"
         self.click_default(main["non-self"])
         # then "id"
@@ -90,14 +90,14 @@ class HCloudDesktopClicker:
         self.click_default(main["addr"])
         self.cpy_pst_default(addr)
         self.click_default(main["tel"])
-        self.cpy_pst_default("11111111111")
+        self.cpy_pst_default("11111111111" if not tel else tel)
         self.click_default(main["job"]["self"])
         self.click_default(main["job"]["input"])
         self.cpy_pst_default("无")
         self.click_default(main["job"]["confirm"])
         self.click_default(main["eula"])
         self.click_default(main["forward"])
-        self.save_screenshot
+        time.sleep(5)
         return self
     
     def save_screenshot(self):

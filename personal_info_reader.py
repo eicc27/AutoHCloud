@@ -14,6 +14,6 @@ class PersonalInfoReader:
             row = []
             for i in info:
                 row.append(i)
-            res.append(row)
-        return res
+            res.append([row[2], row[1], row[3], str(row[6]) if str(row[6]) != "nan" else ""])
+        return res[1:]
     
